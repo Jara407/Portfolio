@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description"
+    content="Portfolio — Creador de contenido audiovisual. Piezas que capturan atención y mueven audiencias." />
+
+  <!-- REPLACE: change to your real name and tagline -->
+  <title>Juan Jaramillo — Creador Audiovisual</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PRELOADER
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__counter"><span id="preloaderCount">0</span><small>%</small></div>
+      <div class="preloader__bar">
+        <div class="preloader__bar-fill" id="preloaderFill"></div>
+      </div>
+      <div class="preloader__label">Cargando experiencia</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CUSTOM CURSOR
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__ring"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       GRAIN OVERLAY
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SCROLL PROGRESS
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════════════════════════════════ -->
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#top" class="nav__brand" data-cursor="link">
+        <!-- REPLACE: your initials or mark -->
+        <span class="nav__brand-mark">JJ</span>
+        <span class="nav__brand-dot"></span>
+      </a>
+      <nav class="nav__menu" aria-label="Primary">
+        <a href="#work" data-cursor="link"><span>01</span> Trabajo</a>
+        <a href="#about" data-cursor="link"><span>02</span> Yo</a>
+        <a href="#process" data-cursor="link"><span>03</span> Proceso</a>
+        <a href="#contact" data-cursor="link"><span>04</span> Contacto</a>
+      </nav>
+      <a href="#contact" class="nav__cta" data-cursor="link">
+        <span>Hablemos</span>
+        <svg viewBox="0 0 14 14" width="14" height="14">
+          <path d="M1 13L13 1M13 1H4M13 1V10" stroke="currentColor" stroke-width="1.5" fill="none" />
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="hero" id="top">
+    <div class="hero__bg" aria-hidden="true">
+      <div class="hero__glow hero__glow--a"></div>
+      <div class="hero__glow hero__glow--b"></div>
+    </div>
+
+    <div class="hero__inner">
+      <div class="hero__meta">
+        <span class="hero__tag">
+          <span class="dot"></span>
+          <!-- REPLACE: your current status -->
+          Disponible para proyectos · 2026
+        </span>
+        <span class="hero__location">
+          <!-- REPLACE: your location -->
+          Medellín / Remoto
+        </span>
+      </div>
+
+      <h1 class="hero__title" data-split>
+        <span class="line"><span class="word">Historias</span> <span class="word">que</span></span>
+        <span class="line"><span class="word italic">detienen</span> <span class="word">el</span> <span
+            class="word">scroll</span>.</span>
+      </h1>
+
+      <p class="hero__lead">
+        <!-- REPLACE: your personal hook -->
+        Diseño y dirijo piezas audiovisuales con una sola obsesión: convertir segundos de atención en decisiones reales.
+        Videos para marcas, creadores y equipos que saben que el formato importa tanto como el mensaje.
+      </p>
+
+      <div class="hero__featured">
+        <div class="hero__featured-label">
+          <span class="num">Pieza 01</span>
+          <span class="sep"></span>
+          <span>Gancho horizontal</span>
+        </div>
+
+        <!-- HOOK horizontal -->
+        <div class="player player--16x9 player--feature" data-video-id="AWB81OSHRIo"
+          data-poster="https://i.ytimg.com/vi/VIDEO_ID_HOOK_H/maxresdefault.jpg" data-title="Gancho principal"
+          data-cursor="play">
+          <div class="player__frame"></div>
+          <div class="player__poster">
+            <div class="player__noise"></div>
+          </div>
+          <button class="player__cta" aria-label="Reproducir video destacado">
+            <span class="player__cta-ring"></span>
+            <svg class="player__cta-icon" viewBox="0 0 24 24" width="28" height="28">
+              <path d="M8 5v14l11-7z" fill="currentColor" />
+            </svg>
+            <span class="player__cta-label">Play</span>
+          </button>
+          <div class="player__controls" data-controls>
+            <button class="player__ctl" data-action="toggle" aria-label="Play/Pause">
+              <svg class="ic-play" viewBox="0 0 24 24" width="16" height="16">
+                <path d="M8 5v14l11-7z" fill="currentColor" />
+              </svg>
+              <svg class="ic-pause" viewBox="0 0 24 24" width="16" height="16">
+                <path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor" />
+              </svg>
+            </button>
+            <div class="player__time" data-time>00:00</div>
+            <div class="player__progress" data-progress>
+              <div class="player__progress-track"></div>
+              <div class="player__progress-fill" data-fill></div>
+              <div class="player__progress-thumb" data-thumb></div>
+            </div>
+            <div class="player__time" data-duration>00:00</div>
+            <button class="player__ctl" data-action="mute" aria-label="Mute">
+              <svg class="ic-vol" viewBox="0 0 24 24" width="16" height="16">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"
+                  fill="currentColor" />
+              </svg>
+              <svg class="ic-mute" viewBox="0 0 24 24" width="16" height="16">
+                <path
+                  d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+            <button class="player__ctl" data-action="fullscreen" aria-label="Fullscreen">
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__indicators">
+        <div class="hero__indicator">
+          <!-- REPLACE: real metric -->
+          <span class="num">+180M</span>
+          <span class="lbl">Vistas generadas</span>
+        </div>
+        <div class="hero__indicator">
+          <!-- REPLACE: real metric -->
+          <span class="num">57</span>
+          <span class="lbl">Proyectos entregados</span>
+        </div>
+        <div class="hero__indicator">
+          <!-- REPLACE: real metric -->
+          <span class="num">12</span>
+          <span class="lbl">Países en cartera</span>
+        </div>
+        <div class="hero__indicator">
+          <!-- REPLACE: real metric -->
+          <span class="num">4.9<small>/5</small></span>
+          <span class="lbl">Promedio cliente</span>
+        </div>
+      </div>
+
+      <div class="hero__scroll" aria-hidden="true">
+        <span>Scroll</span>
+        <div class="hero__scroll-line"><span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MARQUEE
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Storytelling</span><span>✦</span>
+      <span>Dirección</span><span>✦</span>
+      <span>Edición</span><span>✦</span>
+      <span>Color</span><span>✦</span>
+      <span>Motion</span><span>✦</span>
+      <span>Sonido</span><span>✦</span>
+      <span>Estrategia</span><span>✦</span>
+      <span>Storytelling</span><span>✦</span>
+      <span>Dirección</span><span>✦</span>
+      <span>Edición</span><span>✦</span>
+      <span>Color</span><span>✦</span>
+      <span>Motion</span><span>✦</span>
+      <span>Sonido</span><span>✦</span>
+      <span>Estrategia</span><span>✦</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       WORK — VIDEO GALLERY
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="work" id="work">
+    <header class="work__head">
+      <span class="section__eyebrow"><i></i> Trabajo seleccionado</span>
+      <h2 class="work__title">
+        <span class="line">Cinco piezas.</span>
+        <span class="line italic">Un mismo estándar.</span>
+      </h2>
+      <p class="work__lead">Una selección cuidada de formatos verticales y horizontales: ganchos, piezas de marca y
+        narrativas largas. Cada una optimizada para el canal donde respira mejor.</p>
+    </header>
+
+    <!-- Featured hook vertical -->
+    <div class="work__featured-vertical">
+      <div class="work__featured-copy">
+        <span class="section__eyebrow"><i></i> Gancho vertical · 9:16</span>
+        <h3 class="work__featured-title">El primer segundo<br /><span class="italic">decide todo.</span></h3>
+        <p>Diseño específico para feeds verticales: hook frontal, ritmo alto, jerarquía tipográfica que funciona incluso
+          en mute. Esta pieza multiplicó el tiempo de retención respecto al baseline del canal.</p>
+        <ul class="work__featured-meta">
+          <!-- REPLACE: real details -->
+          <li><span>Cliente</span><strong>Marca Fitness</strong></li>
+          <li><span>Formato</span><strong>Reel / Short</strong></li>
+          <li><span>Rol</span><strong>Dirección + Edición</strong></li>
+          <li><span>Año</span><strong>2026</strong></li>
+        </ul>
+      </div>
+
+      <!-- HOOK vertical -->
+      <div class="player player--9x16 player--feature" data-video-id="_t6M5hMjKsw"
+        data-poster="https://i.ytimg.com/vi/VIDEO_ID_HOOK_V/maxresdefault.jpg" data-title="Gancho vertical"
+        data-cursor="play">
+        <div class="player__frame"></div>
+        <div class="player__poster">
+          <div class="player__noise"></div>
+        </div>
+        <button class="player__cta" aria-label="Reproducir">
+          <span class="player__cta-ring"></span>
+          <svg class="player__cta-icon" viewBox="0 0 24 24" width="22" height="22">
+            <path d="M8 5v14l11-7z" fill="currentColor" />
+          </svg>
+        </button>
+        <div class="player__controls" data-controls>
+          <button class="player__ctl" data-action="toggle" aria-label="Play/Pause">
+            <svg class="ic-play" viewBox="0 0 24 24" width="14" height="14">
+              <path d="M8 5v14l11-7z" fill="currentColor" />
+            </svg>
+            <svg class="ic-pause" viewBox="0 0 24 24" width="14" height="14">
+              <path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor" />
+            </svg>
+          </button>
+          <div class="player__progress" data-progress>
+            <div class="player__progress-track"></div>
+            <div class="player__progress-fill" data-fill></div>
+          </div>
+          <button class="player__ctl" data-action="mute" aria-label="Mute">
+            <svg class="ic-vol" viewBox="0 0 24 24" width="14" height="14">
+              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"
+                fill="currentColor" />
+            </svg>
+            <svg class="ic-mute" viewBox="0 0 24 24" width="14" height="14">
+              <path
+                d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
+                fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid of remaining pieces -->
+    <div class="work__grid">
+
+      <!-- Horizontal piece 1 -->
+      <article class="work__item work__item--wide" data-reveal>
+        <div class="work__item-head">
+          <span class="work__idx">02</span>
+          <div>
+            <!-- REPLACE: project name + client -->
+            <h3 class="work__item-title">Campaña <span class="italic">Aurora</span></h3>
+            <p class="work__item-sub">Brand Film · 16:9 · Cliente confidencial</p>
+          </div>
+        </div>
+
+        <div class="player player--16x9" data-video-id="TV6UzCWucAQ"
+          data-poster="https://i.ytimg.com/vi/VIDEO_ID_H1/maxresdefault.jpg" data-title="Brand Film — Aurora"
+          data-cursor="play">
+          <div class="player__frame"></div>
+          <div class="player__poster">
+            <div class="player__noise"></div>
+          </div>
+          <button class="player__cta" aria-label="Reproducir">
+            <span class="player__cta-ring"></span>
+            <svg class="player__cta-icon" viewBox="0 0 24 24" width="22" height="22">
+              <path d="M8 5v14l11-7z" fill="currentColor" />
+            </svg>
+          </button>
+          <div class="player__controls" data-controls>
+            <button class="player__ctl" data-action="toggle" aria-label="Play/Pause">
+              <svg class="ic-play" viewBox="0 0 24 24" width="14" height="14">
+                <path d="M8 5v14l11-7z" fill="currentColor" />
+              </svg>
+              <svg class="ic-pause" viewBox="0 0 24 24" width="14" height="14">
+                <path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor" />
+              </svg>
+            </button>
+            <div class="player__time" data-time>00:00</div>
+            <div class="player__progress" data-progress>
+              <div class="player__progress-track"></div>
+              <div class="player__progress-fill" data-fill></div>
+            </div>
+            <div class="player__time" data-duration>00:00</div>
+            <button class="player__ctl" data-action="mute" aria-label="Mute">
+              <svg class="ic-vol" viewBox="0 0 24 24" width="14" height="14">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"
+                  fill="currentColor" />
+              </svg>
+              <svg class="ic-mute" viewBox="0 0 24 24" width="14" height="14">
+                <path
+                  d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="work__item-foot">
+          <span>Dirección · Edición · Color</span>
+          <span>2026</span>
+        </div>
+      </article>
+
+      <!-- Vertical piece -->
+      <article class="work__item work__item--narrow" data-reveal>
+        <div class="work__item-head">
+          <span class="work__idx">03</span>
+          <div>
+            <!-- REPLACE -->
+            <h3 class="work__item-title">Reel <span class="italic">Nocturno</span></h3>
+            <p class="work__item-sub">Social · 9:16</p>
+          </div>
+        </div>
+
+        <div class="player player--9x16" data-video-id="wY7-bUSxYAI"
+          data-poster="https://i.ytimg.com/vi/VIDEO_ID_V1/maxresdefault.jpg" data-title="Reel Nocturno"
+          data-cursor="play">
+          <div class="player__frame"></div>
+          <div class="player__poster">
+            <div class="player__noise"></div>
+          </div>
+          <button class="player__cta" aria-label="Reproducir">
+            <span class="player__cta-ring"></span>
+            <svg class="player__cta-icon" viewBox="0 0 24 24" width="22" height="22">
+              <path d="M8 5v14l11-7z" fill="currentColor" />
+            </svg>
+          </button>
+          <div class="player__controls" data-controls>
+            <button class="player__ctl" data-action="toggle" aria-label="Play/Pause">
+              <svg class="ic-play" viewBox="0 0 24 24" width="14" height="14">
+                <path d="M8 5v14l11-7z" fill="currentColor" />
+              </svg>
+              <svg class="ic-pause" viewBox="0 0 24 24" width="14" height="14">
+                <path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor" />
+              </svg>
+            </button>
+            <div class="player__progress" data-progress>
+              <div class="player__progress-track"></div>
+              <div class="player__progress-fill" data-fill></div>
+            </div>
+            <button class="player__ctl" data-action="mute" aria-label="Mute">
+              <svg class="ic-vol" viewBox="0 0 24 24" width="14" height="14">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"
+                  fill="currentColor" />
+              </svg>
+              <svg class="ic-mute" viewBox="0 0 24 24" width="14" height="14">
+                <path
+                  d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="work__item-foot">
+          <span>Dirección · Edición</span>
+          <span>2025</span>
+        </div>
+      </article>
+
+      <!-- Horizontal piece 2 -->
+      <article class="work__item work__item--wide" data-reveal>
+        <div class="work__item-head">
+          <span class="work__idx">04</span>
+          <div>
+            <!-- REPLACE -->
+            <h3 class="work__item-title">Documental <span class="italic">Orillas</span></h3>
+            <p class="work__item-sub">Narrativa larga · 16:9</p>
+          </div>
+        </div>
+
+        <div class="player player--16x9" data-video-id="ALzOt4CUUE4"
+          data-poster="https://i.ytimg.com/vi/VIDEO_ID_H2/maxresdefault.jpg" data-title="Documental Orillas"
+          data-cursor="play">
+          <div class="player__frame"></div>
+          <div class="player__poster">
+            <div class="player__noise"></div>
+          </div>
+          <button class="player__cta" aria-label="Reproducir">
+            <span class="player__cta-ring"></span>
+            <svg class="player__cta-icon" viewBox="0 0 24 24" width="22" height="22">
+              <path d="M8 5v14l11-7z" fill="currentColor" />
+            </svg>
+          </button>
+          <div class="player__controls" data-controls>
+            <button class="player__ctl" data-action="toggle" aria-label="Play/Pause">
+              <svg class="ic-play" viewBox="0 0 24 24" width="14" height="14">
+                <path d="M8 5v14l11-7z" fill="currentColor" />
+              </svg>
+              <svg class="ic-pause" viewBox="0 0 24 24" width="14" height="14">
+                <path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor" />
+              </svg>
+            </button>
+            <div class="player__time" data-time>00:00</div>
+            <div class="player__progress" data-progress>
+              <div class="player__progress-track"></div>
+              <div class="player__progress-fill" data-fill></div>
+            </div>
+            <div class="player__time" data-duration>00:00</div>
+            <button class="player__ctl" data-action="mute" aria-label="Mute">
+              <svg class="ic-vol" viewBox="0 0 24 24" width="14" height="14">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"
+                  fill="currentColor" />
+              </svg>
+              <svg class="ic-mute" viewBox="0 0 24 24" width="14" height="14">
+                <path
+                  d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="work__item-foot">
+          <span>Dirección · Cámara · Edición</span>
+          <span>2025</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       ABOUT
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="about" id="about">
+    <div class="about__inner">
+
+      <div class="about__photo">
+        <div class="about__photo-frame">
+          <!-- REPLACE: replace src with your real photo (jpg/webp recommended) -->
+          <!-- REPLACE: swap src for your real photo when ready -->
+          <img src="assets/profile.jpg" alt="Retrato de Juan Jaramillo"
+            onerror="this.src='assets/profile-placeholder.svg'" />
+          <div class="about__photo-shade"></div>
+        </div>
+        <div class="about__photo-caption">
+          <!-- REPLACE -->
+          <span class="k">Retrato</span>
+          <span class="v">Medellín, 2026</span>
+        </div>
+      </div>
+
+      <div class="about__body">
+        <span class="section__eyebrow"><i></i> Sobre mí</span>
+        <h2 class="about__title">
+          <span>Trabajo con</span>
+          <span class="italic">obsesión</span>
+          <span>por el detalle</span>
+          <span>que el ojo</span>
+          <span class="italic">siente,</span>
+          <span>no nota.</span>
+        </h2>
+
+        <div class="about__copy">
+          <p>
+            <!-- REPLACE with your real bio -->
+            Soy <strong>Juan Jaramillo</strong>, creador audiovisual con siete años dirigiendo y editando piezas para
+            marcas, creadores y agencias. Mi foco: construir lenguajes visuales que sostienen la atención, no que la
+            pelean.
+          </p>
+          <p>
+            He trabajado con equipos en LATAM, Europa y Estados Unidos. Escribo, dirijo, edito y finalizo color cuando
+            la pieza lo pide. No entrego nada sin antes preguntarme si yo mismo dejaría de scrollear por esto.
+          </p>
+        </div>
+
+        <div class="about__stack">
+          <div class="about__stack-col">
+            <h4>Herramientas</h4>
+            <ul>
+              <li>DaVinci Resolve</li>
+              <li>Premiere Pro</li>
+              <li>After Effects</li>
+              <li>CapCut Pro</li>
+            </ul>
+          </div>
+          <div class="about__stack-col">
+            <h4>Servicios</h4>
+            <ul>
+              <li>Short-form / Reels</li>
+              <li>Brand films</li>
+              <li>Documental</li>
+              <li>Dirección + Edición</li>
+            </ul>
+          </div>
+          <div class="about__stack-col">
+            <h4>Clientes</h4>
+            <ul>
+              <!-- REPLACE -->
+              <li>Nike Running</li>
+              <li>Rappi</li>
+              <li>Coca-Cola LATAM</li>
+              <li>+ estudios independientes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PROCESS
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="process" id="process">
+    <header class="process__head">
+      <span class="section__eyebrow"><i></i> Cómo trabajo</span>
+      <h2 class="process__title">Del brief <span class="italic">al estreno</span>.</h2>
+    </header>
+
+    <ol class="process__list">
+      <li class="process__item" data-reveal>
+        <span class="process__num">01</span>
+        <h3>Descubrimiento</h3>
+        <p>Entiendo el objetivo real detrás del video. No el brief — la conversación que el cliente necesita que la
+          pieza inicie.</p>
+      </li>
+      <li class="process__item" data-reveal>
+        <span class="process__num">02</span>
+        <h3>Concepto</h3>
+        <p>Propongo una dirección clara: tono, estructura, referencias, tratamiento visual. Simple de aprobar, imposible
+          de confundir.</p>
+      </li>
+      <li class="process__item" data-reveal>
+        <span class="process__num">03</span>
+        <h3>Producción</h3>
+        <p>Rodaje o curaduría de material. Trabajo con un equipo compacto donde cada rol responde directamente al
+          estándar de la pieza.</p>
+      </li>
+      <li class="process__item" data-reveal>
+        <span class="process__num">04</span>
+        <h3>Edición + entrega</h3>
+        <p>Montaje con tres rondas de revisión, color pass, sonido y entregables por canal. El archivo final es el piso,
+          no el techo.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       TESTIMONIALS
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="voices">
+    <header class="voices__head">
+      <span class="section__eyebrow"><i></i> Lo que dicen</span>
+      <h2 class="voices__title">Señales <span class="italic">de confianza</span>.</h2>
+    </header>
+
+    <div class="voices__grid">
+      <figure class="voice" data-reveal>
+        <blockquote>
+          "Entregó una pieza que superó KPIs en la primera semana. Trabajar con él se siente como tener un socio, no un
+          proveedor."
+        </blockquote>
+        <figcaption>
+          <!-- REPLACE -->
+          <strong>María Fernández</strong>
+          <span>Head of Brand · Rappi</span>
+        </figcaption>
+      </figure>
+
+      <figure class="voice" data-reveal>
+        <blockquote>
+          "Es raro encontrar a alguien que entienda estrategia y ejecución audiovisual a la vez. Juan lo hace y lo hace
+          con gusto."
+        </blockquote>
+        <figcaption>
+          <!-- REPLACE -->
+          <strong>David Soto</strong>
+          <span>Creator · 1.2M subs</span>
+        </figcaption>
+      </figure>
+
+      <figure class="voice" data-reveal>
+        <blockquote>
+          "Cada entrega viene con detalle obsesivo. No hay que adivinar qué está pensando — siempre tiene una razón
+          clara."
+        </blockquote>
+        <figcaption>
+          <!-- REPLACE -->
+          <strong>Laura Ortiz</strong>
+          <span>Creative Director · Estudio Norte</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CONTACT / CTA
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="contact" id="contact">
+    <div class="contact__inner">
+      <span class="section__eyebrow contact__eyebrow"><i></i> ¿Empezamos?</span>
+      <h2 class="contact__title">
+        <span class="line">Si llegaste</span>
+        <span class="line">hasta aquí,</span>
+        <span class="line italic">hablemos.</span>
+      </h2>
+
+      <div class="contact__actions">
+        <a href="mailto:personalbrand.jaramillo@gmail.com" class="contact__mail" data-cursor="link">
+          <span class="contact__mail-icon">
+            <!-- Email icon -->
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M2 7l10 7 10-7"/>
+            </svg>
+          </span>
+          <span class="contact__wa-body">
+            <span class="contact__wa-label">Correo directo</span>
+            <span class="contact__wa-value">personalbrand.jaramillo@gmail.com</span>
+          </span>
+          <svg viewBox="0 0 14 14" width="18" height="18">
+            <path d="M1 13L13 1M13 1H4M13 1V10" stroke="currentColor" stroke-width="1.5" fill="none" />
+          </svg>
+        </a>
+
+        <a href="https://wa.me/573014428179" target="_blank" rel="noopener noreferrer"
+           class="contact__wa" data-cursor="link" aria-label="Escribir por WhatsApp">
+          <span class="contact__wa-icon">
+            <!-- WhatsApp icon -->
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+            </svg>
+          </span>
+          <span class="contact__wa-body">
+            <span class="contact__wa-label">WhatsApp</span>
+            <span class="contact__wa-value">+57 301 442 8179</span>
+          </span>
+          <svg viewBox="0 0 14 14" width="18" height="18">
+            <path d="M1 13L13 1M13 1H4M13 1V10" stroke="currentColor" stroke-width="1.5" fill="none" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="contact__meta">
+        <div>
+          <span class="k">Tiempo de respuesta</span>
+          <span class="v">&lt; 24h laborales</span>
+        </div>
+        <div>
+          <span class="k">Zona horaria</span>
+          <span class="v">GMT-5 · Flexible</span>
+        </div>
+        <div>
+          <span class="k">Idiomas</span>
+          <span class="v">Español · Inglés</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════════ -->
+  <footer class="foot">
+    <div class="foot__inner">
+      <div class="foot__brand">
+        <span>Juan Jaramillo</span>
+        <small>Creador audiovisual — © 2026</small>
+      </div>
+      <nav class="foot__links" aria-label="Social">
+        <!-- REPLACE socials -->
+        <a href="#" data-cursor="link">Instagram <i>↗</i></a>
+        <a href="#" data-cursor="link">YouTube <i>↗</i></a>
+        <a href="#" data-cursor="link">Vimeo <i>↗</i></a>
+        <a href="#" data-cursor="link">LinkedIn <i>↗</i></a>
+      </nav>
+      <div class="foot__clock" id="clock">--:-- <small>Medellín</small></div>
+    </div>
+    <div class="foot__giant" aria-hidden="true">JARAMILLO</div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SCRIPTS
+  ═══════════════════════════════════════════════════════════════ -->
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

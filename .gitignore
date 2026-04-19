@@ -1,0 +1,32 @@
+# ── OS junk ─────────────────────────────
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── Editor / IDE ────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Claude Code metadata (local tooling, no valor público) ─
+.agents/
+.claude/
+skills-lock.json
+
+# ── Node / build (por si alguna vez se añade) ──
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.*.local
+
+# ── Logs ────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
