@@ -11,6 +11,10 @@ const qsa   = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const lerp  = (a, b, t)   => a + (b - a) * t;
 
+/* Touch / coarse pointer → iOS, Android. Afecta Lenis, parallax, cursor, tilt. */
+const IS_TOUCH = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+const REDUCED  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 /* ═══════════════════════════════════════════════════════════
    1. PRELOADER
 ═══════════════════════════════════════════════════════════ */
@@ -48,7 +52,13 @@ const lerp  = (a, b, t)   => a + (b - a) * t;
    2. LENIS SMOOTH SCROLL
 ═══════════════════════════════════════════════════════════ */
 function initLenis() {
-  if (typeof Lenis === 'undefined') { initNav(); initReveal(); return; }
+  // En touch devices, scroll nativo iOS/Android es más fluido que Lenis.
+  // Saltar evita rAF loop innecesario + hijacking de wheel que no existe.
+  if (IS_TOUCH || typeof Lenis === 'undefined') {
+    initNav();
+    initReveal();
+    return;
+  }
 
   const lenis = new Lenis({ lerp: 0.1, smoothWheel: true, syncTouch: false });
   (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
@@ -181,12 +191,16 @@ function activatePlayer(playerEl) {
 
   frame.appendChild(iframe);
 
-  // Once iframe loads, mark as playing and bind our controls
+  // Once iframe loads, mark as playing and bind our controls.
+  // Extra ytCmd('playVideo') actúa como safety net en iOS donde el param
+  // autoplay=1 a veces se pierde si el gesto ya expiró.
   iframe.addEventListener('load', () => {
+    playerEl._iframeReady = true;
     setTimeout(() => {
+      ytCmd(iframe, 'playVideo');
       playerEl.classList.add('is-playing');
       wireControls(playerEl, iframe);
-    }, 350);
+    }, 80);
   });
 }
 
@@ -263,20 +277,39 @@ function initPlayers() {
       img.src = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
     }
 
-    // ── Click to play ──
-    // Listen on the whole player wrapper because .player__poster has pointer-events:none
-    playerEl.addEventListener('click', e => {
-      // Clicks inside the controls bar are handled by wireControls
-      if (e.target.closest('[data-controls]')) return;
-      // If already playing, ignore clicks that aren't on the CTA
-      if (playerEl.classList.contains('is-playing')) return;
+    // ── Play (iOS-safe two-phase) ──
+    // En iOS la política de autoplay exige que el iframe se cree DENTRO del
+    // gesto del usuario. Si esperamos al 'click' (touchend), el iframe se
+    // inyecta ~200ms después de touchstart y a veces iOS ya invalidó el gesto
+    // → primer tap no reproduce, segundo sí. Solución: inyectar en pointerdown
+    // (fires al inicio del gesto) y enviar playVideo explícito en click
+    // (garantiza comando en gesto directo cuando iframe ya está listo).
 
-      // Clear any tilt transform before injecting iframe — 3D context breaks iframe rendering
+    const startPlayback = () => {
+      if (playerEl.classList.contains('is-playing')) return;
+      if (playerEl._started) return;
+      playerEl._started = true;
       playerEl.classList.remove('is-tilting');
       playerEl.style.transform = '';
-
       pauseAllExcept(playerEl);
       activatePlayer(playerEl);
+    };
+
+    playerEl.addEventListener('pointerdown', e => {
+      if (e.target.closest('[data-controls]')) return;
+      startPlayback();
+    }, { passive: true });
+
+    playerEl.addEventListener('click', e => {
+      if (e.target.closest('[data-controls]')) return;
+      // Si pointerdown no corrió (p.ej. teclado, focus+Enter), arrancar aquí
+      if (!playerEl._started) { startPlayback(); return; }
+      // Iframe ya existe → mandar playVideo como gesto directo
+      const iframe = qs('iframe', playerEl);
+      if (iframe && playerEl._iframeReady && !playerEl.classList.contains('is-playing')) {
+        ytCmd(iframe, 'playVideo');
+        playerEl.classList.add('is-playing');
+      }
     });
 
     // ── Cursor state ──
@@ -344,7 +377,10 @@ function initPlayers() {
   const glowA    = qs('.hero__glow--a');
   const glowB    = qs('.hero__glow--b');
   const giant    = qs('.foot__giant');
-  const reduce   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // En touch/reduced motion, solo actualizar barra de progreso (barato).
+  // Glows + giant parallax animan filter/blur grande → costoso en iOS.
+  const heavyParallax = !IS_TOUCH && !REDUCED;
 
   let ticking = false;
 
@@ -356,7 +392,7 @@ function initPlayers() {
 
     if (progress) progress.style.transform = `scaleX(${p})`;
 
-    if (!reduce) {
+    if (heavyParallax) {
       if (glowA && y < vh * 1.5) {
         glowA.style.transform = `translate3d(0, ${y * 0.18}px, 0)`;
       }
@@ -366,7 +402,7 @@ function initPlayers() {
       if (giant) {
         const r = giant.getBoundingClientRect();
         if (r.top < vh && r.bottom > 0) {
-          const local = (vh - r.top) / (vh + r.height); // 0..1 as it enters
+          const local = (vh - r.top) / (vh + r.height);
           const x = (local - 0.5) * 120;
           giant.style.transform = `translate3d(${x}px, 0, 0)`;
         }

@@ -1363,6 +1363,39 @@ body::before {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   MOBILE PERF — ahorra GPU en iOS Safari
+   mix-blend-mode overlay + filter blur grande + backdrop-filter
+   disparan repaint costoso en móvil. Reducido/apagado aquí.
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  /* Grain off: mix-blend-mode overlay en fixed layer mata fps en iOS */
+  .grain { display: none; }
+
+  /* Glows con blur más chico: 120px → 60px, ahorra repaint */
+  .hero__glow--a, .hero__glow--b {
+    filter: blur(60px);
+    will-change: auto;
+  }
+
+  /* Parallax desactivado → sin will-change innecesario */
+  .foot__giant { will-change: auto; }
+
+  /* Backdrop-filter más ligero en nav y controles */
+  .nav.is-scrolled {
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+  }
+  .player__cta {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .player__controls {
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    SCROLLBAR
 ═══════════════════════════════════════════════════════════════ */
 ::-webkit-scrollbar { width: 6px; }
