@@ -1598,12 +1598,24 @@ body::before {
   position: relative;
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  /* Permite scroll vertical del body, JS maneja el pan horizontal */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.clients__marquee.is-dragging { cursor: grabbing; }
+/* Durante drag, evitar hover-color intermedio + drag nativo de imágenes */
+.clients__marquee img {
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
 }
 .clients__track {
   display: flex;
   gap: 0;
   white-space: nowrap;
-  animation: slide 50s linear infinite;
+  /* animation removida — JS toma control (auto-scroll + drag + inercia) */
   width: max-content;
   will-change: transform;
 }

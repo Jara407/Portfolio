@@ -133,8 +133,9 @@ function initReveal() {
 
 /* ═══════════════════════════════════════════════════════════
    6. VIDEO PLAYER
-   Strategy: inject <iframe> directly on click, control via postMessage.
-   No YouTube IFrame API callback needed → works in Brave, file://, localhost.
+   Strategy: preload iframe con autoplay=0 cuando el player se acerca al
+   viewport. Cuando el usuario toca, ytCmd('playVideo') se envía desde
+   el gesto directo → iOS lo permite → reproduce en 1 tap.
 ═══════════════════════════════════════════════════════════ */
 
 /** Send a command to the YouTube player inside an iframe */
@@ -146,8 +147,9 @@ function ytCmd(iframe, func) {
   } catch (_) {}
 }
 
-/** Build & inject the YouTube iframe, then wire controls */
-function activatePlayer(playerEl) {
+/** Inyecta iframe con autoplay=0 (precarga, no reproduce aún) */
+function preloadPlayer(playerEl) {
+  if (playerEl._preloaded) return;
   const videoId = playerEl.dataset.videoId;
   if (!videoId || videoId.startsWith('VIDEO_ID')) {
     console.warn('[Player] Replace data-video-id with a real YouTube ID:', playerEl);
@@ -155,38 +157,30 @@ function activatePlayer(playerEl) {
   }
 
   const frame = qs('.player__frame', playerEl);
+  if (frame.querySelector('iframe')) return;
 
-  // Already has iframe → just resume
-  const existing = frame.querySelector('iframe');
-  if (existing) {
-    ytCmd(existing, 'playVideo');
-    playerEl.classList.add('is-playing');
-    return;
-  }
+  playerEl._preloaded = true;
 
-  // Embed params
+  // Embed params — autoplay=0: el iframe carga pero no reproduce hasta
+  // que el usuario envíe explícitamente 'playVideo' (como gesto directo).
   const p = new URLSearchParams({
-    autoplay:       '1',
-    controls:       '0',   // hide YouTube controls
+    autoplay:       '0',
+    controls:       '0',
     rel:            '0',
     modestbranding: '1',
     iv_load_policy: '3',
     playsinline:    '1',
-    enablejsapi:    '1',   // required for postMessage
+    enablejsapi:    '1',
     fs:             '0',
   });
 
-  // origin param required by YouTube when enablejsapi=1, but breaks on file://
   const loc = window.location;
-  const isHttp = loc.protocol === 'http:' || loc.protocol === 'https:';
-  if (isHttp) p.set('origin', loc.origin);
+  if (loc.protocol === 'http:' || loc.protocol === 'https:') p.set('origin', loc.origin);
 
   const iframe = document.createElement('iframe');
-  // Use standard youtube.com (nocookie is often blocked by privacy browsers / returns 153)
   iframe.src   = `https://www.youtube.com/embed/${videoId}?${p}`;
   iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
   iframe.setAttribute('allowfullscreen', '');
-  // pointer-events:none hides YT's own interface; our buttons sit above at z-index:5
   iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;';
 
   frame.appendChild(iframe);
@@ -194,20 +188,21 @@ function activatePlayer(playerEl) {
   iframe.addEventListener('load', () => {
     playerEl._iframeReady = true;
     playerEl.classList.remove('is-loading');
-
-    if (IS_TOUCH) {
-      // iOS: no establecer is-playing desde aquí — no hay gesto de usuario activo.
-      // El CTA central sigue visible; el siguiente tap del usuario
-      // (click handler) llama ytCmd('playVideo') como gesto directo → iOS lo permite.
-      wireControls(playerEl, iframe);
-    } else {
-      setTimeout(() => {
-        ytCmd(iframe, 'playVideo');
-        playerEl.classList.add('is-playing');
-        wireControls(playerEl, iframe);
-      }, 80);
+    // Si el usuario ya tapeó mientras cargaba, disparar play ahora
+    if (playerEl._wantsPlay) {
+      playPlayer(playerEl, iframe);
     }
   });
+}
+
+/** Ejecuta playVideo sobre un iframe listo y sincroniza estado UI */
+function playPlayer(playerEl, iframe) {
+  if (!iframe) iframe = playerEl.querySelector('iframe');
+  if (!iframe) return;
+  ytCmd(iframe, 'playVideo');
+  playerEl.classList.add('is-playing');
+  playerEl.classList.remove('is-loading');
+  if (!playerEl._controlsWired) wireControls(playerEl, iframe);
 }
 
 /** Bind our custom control buttons to postMessage commands */
@@ -276,6 +271,23 @@ function pauseAllExcept(active) {
 
 /** Setup thumbnails + click-to-play for all .player elements */
 function initPlayers() {
+  // Precargar iframes cuando se acerquen al viewport — evita que el primer
+  // tap del usuario tenga que esperar la carga. Iframe preloaded + tap
+  // directo = reproduce en 1 tap.
+  if ('IntersectionObserver' in window) {
+    const preloadObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          preloadPlayer(e.target);
+          preloadObs.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '300px 0px' }); // precarga 300px antes de entrar
+    qsa('.player').forEach(el => preloadObs.observe(el));
+  } else {
+    qsa('.player').forEach(preloadPlayer);
+  }
+
   qsa('.player').forEach(playerEl => {
     const poster  = qs('.player__poster', playerEl);
     const videoId = playerEl.dataset.videoId;
@@ -290,23 +302,30 @@ function initPlayers() {
       img.src = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
     }
 
-    // ── Play (iOS-safe two-phase) ──
-    // En iOS la política de autoplay exige que el iframe se cree DENTRO del
-    // gesto del usuario. Si esperamos al 'click' (touchend), el iframe se
-    // inyecta ~200ms después de touchstart y a veces iOS ya invalidó el gesto
-    // → primer tap no reproduce, segundo sí. Solución: inyectar en pointerdown
-    // (fires al inicio del gesto) y enviar playVideo explícito en click
-    // (garantiza comando en gesto directo cuando iframe ya está listo).
-
+    // ── Play (1-tap con iframe preloaded) ──
+    // El iframe se precarga via IntersectionObserver antes del tap.
+    // Al tapear: playPlayer ejecuta ytCmd('playVideo') desde el gesto directo,
+    // que iOS permite sobre un iframe YT ya inicializado (autoplay=0 + 'listening' state).
     const startPlayback = () => {
       if (playerEl.classList.contains('is-playing')) return;
       if (playerEl._started) return;
       playerEl._started = true;
+      playerEl._wantsPlay = true;
       playerEl.classList.remove('is-tilting');
-      playerEl.classList.add('is-loading'); // feedback visual mientras carga iframe
       playerEl.style.transform = '';
       pauseAllExcept(playerEl);
-      activatePlayer(playerEl);
+
+      // Si el preload aún no arrancó (scroll muy rápido), dispararlo ahora
+      if (!playerEl._preloaded) preloadPlayer(playerEl);
+
+      const iframe = playerEl.querySelector('iframe');
+      if (iframe && playerEl._iframeReady) {
+        // Iframe listo → play inmediato en gesto directo → 1 tap
+        playPlayer(playerEl, iframe);
+      } else {
+        // Iframe cargando → feedback visual, load handler disparará play
+        playerEl.classList.add('is-loading');
+      }
     };
 
     playerEl.addEventListener('pointerdown', e => {
@@ -317,17 +336,12 @@ function initPlayers() {
     playerEl.addEventListener('click', e => {
       if (e.target.closest('[data-controls]')) return;
       if (playerEl.classList.contains('is-playing')) return;
-      // Si pointerdown no corrió (teclado, etc.), arrancar aquí
       if (!playerEl._started) { startPlayback(); return; }
-      // Iframe listo → este click ES gesto de usuario → iOS lo permite
-      const iframe = qs('iframe', playerEl);
+      // Safety net: si pointerdown no pudo tocar el iframe y ahora sí, reintentar
+      const iframe = playerEl.querySelector('iframe');
       if (iframe && playerEl._iframeReady) {
-        ytCmd(iframe, 'playVideo');
-        playerEl.classList.add('is-playing');
-        if (!playerEl._controlsWired) wireControls(playerEl, iframe);
+        playPlayer(playerEl, iframe);
       }
-      // Si iframe aún no cargó: el load handler lo activará en cuanto termine.
-      // El CTA sigue visible gracias al estado is-loading (no is-playing).
     });
 
     // ── Cursor state ──
@@ -478,6 +492,105 @@ function initPlayers() {
 })();
 
 /* ═══════════════════════════════════════════════════════════
-   11. INIT
+   11. CLIENTS CAROUSEL (swipe + auto-scroll + inercia)
+   Reemplaza la animación CSS con rAF para soportar drag táctil.
+═══════════════════════════════════════════════════════════ */
+(function initClientsCarousel() {
+  const marquee = qs('.clients__marquee');
+  const track   = qs('.clients__track');
+  if (!marquee || !track) return;
+
+  const AUTO_SPEED = 50; // px/s hacia la izquierda (modo idle)
+  let setWidth     = 0;
+  let offset       = 0;
+  let lastTime     = 0;
+  let dragging     = false;
+  let startX       = 0;
+  let startOffset  = 0;
+  let velocity     = 0;
+  let lastMoveX    = 0;
+  let lastMoveTime = 0;
+
+  // El track tiene los 8 clientes duplicados (set1 + set2).
+  // Un set = scrollWidth / 2. Offset se mantiene en [-setWidth, 0] para loop infinito.
+  function measure() { setWidth = track.scrollWidth / 2; }
+
+  function wrap() {
+    if (setWidth <= 0) return;
+    while (offset <= -setWidth) offset += setWidth;
+    while (offset > 0)          offset -= setWidth;
+  }
+
+  function tick(now) {
+    if (!lastTime) lastTime = now;
+    const dt = Math.min(0.05, (now - lastTime) / 1000); // clamp anti-saltos tras tab hidden
+    lastTime = now;
+
+    if (!dragging) {
+      // Auto-scroll base (pausado cuando reduce-motion)
+      if (!REDUCED) offset -= AUTO_SPEED * dt;
+
+      // Inercia tras soltar (decay exponencial estable independiente del fps)
+      if (Math.abs(velocity) > 2) {
+        offset += velocity * dt;
+        velocity *= Math.pow(0.92, dt * 60);
+      } else {
+        velocity = 0;
+      }
+    }
+
+    wrap();
+    track.style.transform = `translate3d(${offset.toFixed(2)}px, 0, 0)`;
+    requestAnimationFrame(tick);
+  }
+
+  // Arrancar después del primer layout (imágenes pueden afectar scrollWidth)
+  requestAnimationFrame(() => {
+    measure();
+    tick(performance.now());
+  });
+  window.addEventListener('load',   measure, { once: true });
+  window.addEventListener('resize', measure, { passive: true });
+
+  // ── Drag (pointer events → unifica touch + mouse) ──
+  marquee.addEventListener('pointerdown', e => {
+    if (e.button !== undefined && e.button !== 0) return;
+    dragging     = true;
+    startX       = e.clientX;
+    startOffset  = offset;
+    lastMoveX    = e.clientX;
+    lastMoveTime = performance.now();
+    velocity     = 0;
+    try { marquee.setPointerCapture(e.pointerId); } catch (_) {}
+    marquee.classList.add('is-dragging');
+  });
+
+  marquee.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const now = performance.now();
+    offset    = startOffset + (e.clientX - startX);
+    wrap();
+
+    // Track velocidad para momentum al soltar
+    const dt = now - lastMoveTime;
+    if (dt > 0) velocity = (e.clientX - lastMoveX) / (dt / 1000);
+    lastMoveX    = e.clientX;
+    lastMoveTime = now;
+  });
+
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    try { marquee.releasePointerCapture(e.pointerId); } catch (_) {}
+    marquee.classList.remove('is-dragging');
+  }
+  marquee.addEventListener('pointerup',     endDrag);
+  marquee.addEventListener('pointercancel', endDrag);
+  // pointerleave para mouse que sale del área arrastrando
+  marquee.addEventListener('pointerleave',  endDrag);
+})();
+
+/* ═══════════════════════════════════════════════════════════
+   12. INIT
 ═══════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', initPlayers);
