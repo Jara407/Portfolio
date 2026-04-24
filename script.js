@@ -191,16 +191,22 @@ function activatePlayer(playerEl) {
 
   frame.appendChild(iframe);
 
-  // Once iframe loads, mark as playing and bind our controls.
-  // Extra ytCmd('playVideo') actúa como safety net en iOS donde el param
-  // autoplay=1 a veces se pierde si el gesto ya expiró.
   iframe.addEventListener('load', () => {
     playerEl._iframeReady = true;
-    setTimeout(() => {
-      ytCmd(iframe, 'playVideo');
-      playerEl.classList.add('is-playing');
+    playerEl.classList.remove('is-loading');
+
+    if (IS_TOUCH) {
+      // iOS: no establecer is-playing desde aquí — no hay gesto de usuario activo.
+      // El CTA central sigue visible; el siguiente tap del usuario
+      // (click handler) llama ytCmd('playVideo') como gesto directo → iOS lo permite.
       wireControls(playerEl, iframe);
-    }, 80);
+    } else {
+      setTimeout(() => {
+        ytCmd(iframe, 'playVideo');
+        playerEl.classList.add('is-playing');
+        wireControls(playerEl, iframe);
+      }, 80);
+    }
   });
 }
 
@@ -234,13 +240,20 @@ function wireControls(playerEl, iframe) {
   });
 
   // ── Fullscreen ──
+  // iOS Safari no soporta requestFullscreen en <div>. Fallback: abrir en YouTube.
   qs('[data-action="fullscreen"]', playerEl)?.addEventListener('click', e => {
     e.stopPropagation();
+    const fsEnabled = document.fullscreenEnabled || document.webkitFullscreenEnabled;
+    if (!fsEnabled) {
+      window.open(`https://www.youtube.com/watch?v=${playerEl.dataset.videoId}`, '_blank', 'noopener');
+      return;
+    }
     iframe.style.pointerEvents = 'auto';
-    if (!document.fullscreenElement) {
-      playerEl.requestFullscreen?.() || playerEl.webkitRequestFullscreen?.();
+    const inFs = document.fullscreenElement || document.webkitFullscreenElement;
+    if (!inFs) {
+      (playerEl.requestFullscreen || playerEl.webkitRequestFullscreen)?.call(playerEl);
     } else {
-      document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+      (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
     }
     setTimeout(() => { iframe.style.pointerEvents = 'none'; }, 800);
   });
@@ -290,6 +303,7 @@ function initPlayers() {
       if (playerEl._started) return;
       playerEl._started = true;
       playerEl.classList.remove('is-tilting');
+      playerEl.classList.add('is-loading'); // feedback visual mientras carga iframe
       playerEl.style.transform = '';
       pauseAllExcept(playerEl);
       activatePlayer(playerEl);
@@ -302,14 +316,18 @@ function initPlayers() {
 
     playerEl.addEventListener('click', e => {
       if (e.target.closest('[data-controls]')) return;
-      // Si pointerdown no corrió (p.ej. teclado, focus+Enter), arrancar aquí
+      if (playerEl.classList.contains('is-playing')) return;
+      // Si pointerdown no corrió (teclado, etc.), arrancar aquí
       if (!playerEl._started) { startPlayback(); return; }
-      // Iframe ya existe → mandar playVideo como gesto directo
+      // Iframe listo → este click ES gesto de usuario → iOS lo permite
       const iframe = qs('iframe', playerEl);
-      if (iframe && playerEl._iframeReady && !playerEl.classList.contains('is-playing')) {
+      if (iframe && playerEl._iframeReady) {
         ytCmd(iframe, 'playVideo');
         playerEl.classList.add('is-playing');
+        if (!playerEl._controlsWired) wireControls(playerEl, iframe);
       }
+      // Si iframe aún no cargó: el load handler lo activará en cuanto termine.
+      // El CTA sigue visible gracias al estado is-loading (no is-playing).
     });
 
     // ── Cursor state ──

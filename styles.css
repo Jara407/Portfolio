@@ -575,6 +575,10 @@ body::before {
 
 .player.is-playing .player__cta { opacity: 0; pointer-events: none; transform: translate(-50%, -50%) scale(.8); }
 
+/* Estado de carga — CTA pulsa para indicar que el tap fue registrado */
+.player.is-loading .player__cta { opacity: .6; }
+.player.is-loading .player__cta-ring { animation: ctaPulse .7s ease-out infinite; }
+
 /* Custom controls bar */
 .player__controls {
   position: absolute;
