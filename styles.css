@@ -28,9 +28,17 @@
   --ease-in:    cubic-bezier(.7,0,.84,0);
   --ease-io:    cubic-bezier(.83,0,.17,1);
 
-  --f-display:  'Space Grotesk', 'Inter', system-ui, sans-serif;
-  --f-body:     'Inter', system-ui, sans-serif;
+  /* Satoshi = stand-in de Eina (Fontshare, free).
+     Si compras Eina luego, reemplaza 'Satoshi' por 'Eina01' aquí. */
+  --f-display:  'Satoshi', 'Inter', system-ui, sans-serif;
+  --f-body:     'Satoshi', 'Inter', system-ui, sans-serif;
   --f-mono:     'JetBrains Mono', ui-monospace, monospace;
+
+  /* Adobe brand colors para guiño herramientas */
+  --pr-bg: #00005B;
+  --pr-fg: #9999FF;
+  --ae-bg: #330066;
+  --ae-fg: #D3AAFF;
 
   --nav-h: 72px;
   --gutter: clamp(20px, 4vw, 56px);
@@ -376,11 +384,13 @@ body::before {
 
 .hero__lead {
   max-width: 620px;
-  font-size: clamp(15px, 1.2vw, 18px);
+  font-size: clamp(16px, 1.3vw, 19px);
   color: var(--text-dim);
-  line-height: 1.55;
+  line-height: 1.6;
   letter-spacing: -0.01em;
 }
+/* Herramientas en el lead quedan en blanco para contrastar con el dim */
+.hero__lead strong { color: var(--text); font-weight: 500; }
 
 .hero__featured {
   margin-top: 8px;
@@ -722,7 +732,7 @@ body::before {
   letter-spacing: -0.035em;
 }
 .work__featured-copy p {
-  color: var(--text-dim); max-width: 460px; line-height: 1.55;
+  color: var(--text-dim); max-width: 460px; line-height: 1.6; font-size: clamp(14px, 1vw, 16px);
 }
 .work__featured-meta {
   margin-top: 16px;
@@ -863,11 +873,9 @@ body::before {
   font-family: var(--f-display);
   font-weight: 500;
   font-size: clamp(36px, 4.6vw, 76px);
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: -0.035em;
-  display: flex; flex-wrap: wrap; gap: 0.22em 0.28em;
 }
-.about__title span { display: inline-block; }
 
 .about__copy {
   display: grid; gap: 16px;
@@ -876,7 +884,7 @@ body::before {
   font-size: clamp(15px, 1vw, 17px);
   line-height: 1.65;
 }
-.about__copy strong { color: var(--text); font-weight: 500; }
+.about__copy strong { color: var(--text); font-weight: 600; letter-spacing: -0.015em; }
 
 .about__stack {
   margin-top: 12px;
@@ -1101,7 +1109,19 @@ body::before {
   justify-self: start;
 }
 
-/* ── WhatsApp button ── */
+/* ── Instagram override (reemplaza WhatsApp) ── */
+.contact__ig-icon {
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  background: rgba(225, 48, 108, .07);
+  border: 1px solid rgba(225, 48, 108, .18);
+  color: #E1306C;
+  flex-shrink: 0;
+  transition: background-color .3s, border-color .3s;
+}
+
+/* ── WhatsApp / base shared button ── */
 .contact__wa {
   display: inline-flex;
   align-items: center;
@@ -1159,6 +1179,18 @@ body::before {
 }
 .contact__wa > svg { flex-shrink: 0; opacity: .4; transition: opacity .3s, transform .4s var(--ease-out); }
 .contact__wa:hover > svg { opacity: 1; transform: translate(2px, -2px); }
+
+/* Instagram — mayor especificidad para sobreescribir colores verdes de WA */
+.contact__wa.contact__ig:hover {
+  background: rgba(225, 48, 108, .06);
+  border-color: rgba(225, 48, 108, .3);
+  box-shadow: 0 0 40px rgba(225, 48, 108, .07);
+}
+.contact__wa.contact__ig:hover .contact__ig-icon {
+  background: rgba(225, 48, 108, .14);
+  border-color: rgba(225, 48, 108, .35);
+}
+.contact__wa.contact__ig:hover .contact__wa-label { color: rgba(225, 48, 108, .75); }
 
 @media (max-width: 720px) {
   .contact__actions { flex-direction: column; }
@@ -1363,6 +1395,291 @@ body::before {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   BOTONES PRIMARIOS
+═══════════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  border: 1px solid transparent;
+  transition:
+    background-color .35s var(--ease-out),
+    border-color .35s var(--ease-out),
+    color .35s var(--ease-out),
+    transform .35s var(--ease-out);
+  white-space: nowrap;
+}
+.btn svg { transition: transform .4s var(--ease-out); }
+
+.btn--primary { background: var(--accent); color: #000; }
+.btn--primary:hover { background: var(--accent-2); transform: translateY(-2px); }
+.btn--primary:hover svg { transform: translate(2px, -2px); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line);
+}
+.btn--ghost:hover {
+  background: rgba(255,255,255,.04);
+  border-color: var(--text-mute);
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO — actions bar + tools widget (guiño Pr / Ae)
+═══════════════════════════════════════════════════════════════ */
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 24px;
+  margin-top: 4px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .8s var(--ease-out) .6s, transform .9s var(--ease-out) .6s;
+}
+.hero.is-ready .hero__actions { opacity: 1; transform: none; }
+
+.hero__tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 24px;
+  margin-left: auto;
+  border-left: 1px solid var(--line-soft);
+}
+.hero__tools-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+@media (max-width: 720px) {
+  .hero__tools {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+    width: 100%;
+    padding-top: 12px;
+    margin-top: 4px;
+    border-top: 1px solid var(--line-soft);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOOL TILES — Pr / Ae con hover color Adobe oficial
+═══════════════════════════════════════════════════════════════ */
+.tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-family: var(--f-display);
+  letter-spacing: -0.02em;
+  border-radius: 10px;
+  transition:
+    background-color .4s var(--ease-out),
+    color .4s var(--ease-out),
+    border-color .4s var(--ease-out),
+    transform .35s var(--ease-out);
+  text-decoration: none;
+}
+
+/* Small (hero) — cuadrado compacto */
+.tool:not(.tool--lg) {
+  width: 42px; height: 42px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.tool:not(.tool--lg):hover { transform: translateY(-2px); }
+.tool--pr:not(.tool--lg):hover {
+  background: var(--pr-bg);
+  color: var(--pr-fg);
+  border-color: var(--pr-fg);
+}
+.tool--ae:not(.tool--lg):hover {
+  background: var(--ae-bg);
+  color: var(--ae-fg);
+  border-color: var(--ae-fg);
+}
+
+/* Large (about) — tile + label */
+.tool--lg {
+  padding: 16px 22px 16px 16px;
+  gap: 14px;
+  border-radius: var(--r-md);
+  color: var(--text);
+}
+.tool--lg span {
+  width: 52px; height: 52px;
+  display: grid; place-items: center;
+  background: var(--surface-2);
+  border-radius: 10px;
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--text-dim);
+  letter-spacing: -0.03em;
+  transition: background-color .4s var(--ease-out), color .4s var(--ease-out);
+}
+.tool--lg small {
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.tool--lg:hover { transform: translateY(-2px); border-color: var(--text-mute); }
+.tool--lg.tool--pr:hover span { background: var(--pr-bg); color: var(--pr-fg); }
+.tool--lg.tool--ae:hover span { background: var(--ae-bg); color: var(--ae-fg); }
+
+/* ═══════════════════════════════════════════════════════════════
+   ABOUT — tools row (reemplaza stack de 3 columnas)
+═══════════════════════════════════════════════════════════════ */
+.about__tools {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line-soft);
+  display: grid; gap: 16px;
+}
+.about__tools-label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+.about__tools-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CLIENTES — carrusel horizontal (inspirado en solazzoedits)
+═══════════════════════════════════════════════════════════════ */
+.clients {
+  padding: clamp(60px, 10vw, 120px) 0;
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  background: var(--bg-1);
+  overflow: hidden;
+}
+.clients__head {
+  padding: 0 var(--gutter);
+  max-width: var(--max-w);
+  margin: 0 auto clamp(40px, 6vw, 64px);
+  display: grid;
+  gap: 20px;
+}
+.clients__title {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(32px, 5vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  max-width: 900px;
+}
+
+.clients__marquee {
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.clients__track {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  animation: slide 50s linear infinite;
+  width: max-content;
+  will-change: transform;
+}
+.client {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 40px 16px 24px;
+  border-right: 1px solid var(--line-soft);
+  flex-shrink: 0;
+  transition: background-color .4s var(--ease-out);
+  cursor: default;
+}
+.client:hover { background: rgba(255,255,255,.025); }
+
+/* Avatar circular — grayscale en reposo, color en hover */
+.client__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  position: relative;
+  transition: border-color .5s var(--ease-out), box-shadow .5s var(--ease-out);
+}
+.client__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  filter: grayscale(100%) contrast(1.05) brightness(.9);
+  transition: filter .6s var(--ease-out), transform .7s var(--ease-out);
+  will-change: filter;
+}
+.client:hover .client__avatar {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(233,228,216,.12);
+}
+.client:hover .client__avatar img {
+  filter: grayscale(0%) contrast(1) brightness(1);
+  transform: scale(1.06);
+}
+
+/* Texto */
+.client__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.client__name {
+  font-family: var(--f-display);
+  font-size: clamp(15px, 1.4vw, 21px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text);
+  white-space: nowrap;
+  transition: color .4s;
+}
+.client:hover .client__name { color: var(--accent); }
+.client__tag {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .client { padding: 12px 24px 12px 16px; gap: 14px; }
+  .client__avatar { width: 52px; height: 52px; }
+  .clients__track { animation-duration: 40s; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    MOBILE PERF — ahorra GPU en iOS Safari
    mix-blend-mode overlay + filter blur grande + backdrop-filter
    disparan repaint costoso en móvil. Reducido/apagado aquí.
@@ -1379,6 +1696,9 @@ body::before {
 
   /* Parallax desactivado → sin will-change innecesario */
   .foot__giant { will-change: auto; }
+
+  /* Clients marquee: animación infinita bajo presión de fps */
+  .clients__track { will-change: auto; animation-duration: 60s; }
 
   /* Backdrop-filter más ligero en nav y controles */
   .nav.is-scrolled {
